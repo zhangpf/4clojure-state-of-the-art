@@ -127,7 +127,6 @@ apply +
 ;; Write a function which takes a default value and a sequence of keys and constructs a map.
 #(zipmap %2 (repeat %))
 
-
 ;; Problem 161
 ;; Set A is a subset of set B, or equivalently B is a superset of A, if A is "contained" inside B. A and B may coincide.
 #{1 2}

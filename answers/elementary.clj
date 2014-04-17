@@ -2,11 +2,11 @@
 ;; Pengfei Zhang
 ;; Elementary level
 
-;; Problem 1
+;; Problem 1: Nothing but the Truth
 ;; This is a clojure form. Enter a value which will make the form evaluate to true. Don't over think it!
 true
 
-;; Problem 2
+;; Problem 2: Simple Math
 ;; Enter only enough to fill in the blank (in this case, a single number) - do not retype the whole problem
 4
 
@@ -126,7 +126,6 @@ apply +
 ;; Problem 156
 ;; Write a function which takes a default value and a sequence of keys and constructs a map.
 #(zipmap %2 (repeat %))
-
 
 ;; Problem 161
 ;; Set A is a subset of set B, or equivalently B is a superset of A, if A is "contained" inside B. A and B may coincide.

@@ -1,4 +1,4 @@
 4clojure-state-of-the-art
 =========================
 
-The shortest answers collection to the problem in 4clojure.com 
+The shortest and amazing solution collections to 4clojure.

@@ -45,6 +45,29 @@ filter odd?
 ;; Write a function which returns true if the given sequence is a palindrome.
 #(= (reverse %) (seq %))
 
+;; Problem 28. Flatten a Sequence
+;; Write a function which flattens a sequence.
+;; Special Restrictions: flatten
+;; megaterik's solution
+(fn f [x] (if (coll? x) (mapcat f x) [x]))
+
+;; Problem 29. Get the Caps
+;; Write a function which takes a string and returns a new string containing only the capital letters.
+;; megaterik's solution
+#(.replaceAll % "[^A-Z]" "")
+
+;; Problem 32. Duplicate a Sequence
+;; Write a function which duplicates each element of a sequence.
+;; austintaylor's solution
+#(interleave % %)
+;; aceeca1's solution
+mapcat #(list % %)
+
+;; Problem 38. Maximum value
+;; Write a function which takes a variable number of parameters and returns the maximum value.
+;; ramo's solution
+#(last (sort %&))
+
 ;; Problem 61. Map Construction
 ;; Write a function which takes a vector of keys and a vector of values and constructs a map from them.
 ;; chouser's solution

@@ -56,6 +56,11 @@ filter odd?
 ;; megaterik's solution
 #(.replaceAll % "[^A-Z]" "")
 
+;; Problem 30. Compress a Sequence
+;; Write a function which removes consecutive duplicates from a sequence.
+;; mllr's solution
+#(map last (partition-by str %))
+
 ;; Problem 32. Duplicate a Sequence
 ;; Write a function which duplicates each element of a sequence.
 ;; austintaylor's solution
@@ -63,10 +68,43 @@ filter odd?
 ;; aceeca1's solution
 mapcat #(list % %)
 
+;; Problem 33. Replicate a Sequence
+;; Write a function which replicates each element of a sequence a variable number of times.
+;; dacquiri's solution
+#(for [x %, i (range %2)] x)
+
+;; Problem 34. Implement range
+;; Write a function which creates a list of all integers in a given range.
+;; Special Restrictions: range
+#(take (- %2 %) (iterate inc %))
+
 ;; Problem 38. Maximum value
 ;; Write a function which takes a variable number of parameters and returns the maximum value.
 ;; ramo's solution
 #(last (sort %&))
+
+;; Problem 39. Interleave Two Seqs
+;; Write a function which takes two sequences and returns the first item from each, then the second item from each, then the third,
+;; etc.
+mapcat vector
+
+;; Problem 42. Factorial Fun
+;; Write a function which calculates factorials.
+#(apply * (range % 1 -1))
+
+;; Problem 45. Intro to Iterate
+;; The iterate function can be used to produce an infinite lazy sequence.
+(range 1 15 3)
+
+;; Problem 47. Contain Yourself
+;; The contains? function checks if a KEY is present in a given collection. This often leads beginner clojurians to use it incorrectly
+;; with numerically indexed collections like vectors and lists.
+4
+
+;; Problem 48. Intro to some
+;; The some function takes a predicate function and a collection. It returns the first logical true value of (predicate x) where x is
+;; an item in the collection.
+6
 
 ;; Problem 61. Map Construction
 ;; Write a function which takes a vector of keys and a vector of values and constructs a map from them.
@@ -84,15 +122,54 @@ mapcat #(list % %)
 ;; aceeca1's solution
 (comp set filter)
 
+;; Problem 95. To Tree, or not to Tree
+;; Write a predicate which checks whether or not a given sequence represents a binary tree. Each node in the tree must have a value, a
+;; left child, and a right child.
+;; redraiment's solution
+(fn f [x] (or (nil? x) (and (coll? x) (= 3 (count x)) (every? f (rest x)))))
+
+;; Problem 96. Beauty is Symmetry
+;; Write a predicate to determine whether or not a given binary tree is symmetric. (see To Tree, or not to Tree for a reminder on the
+;; tree representation we're using).
+;; baex's solution
+#(= % ((fn f [[a b c]] (if a [a (f c) (f b)])) %))
+
 ;; Problem 97. Pascal's Triangle
 ;; Write a function which returns the nth row of Pascal's Triangle. 
 ;; baex's solution
 #(nth (iterate (fn [x] (map + `(0 ~@x) `(~@x 0))) [1]) (- % 1))
 
+;; Problem 107. Simple closures
+;; Given a positive integer n, return a function (f x) which computes xn. Observe that the effect of this is to preserve the value of n
+;; for use outside the scope in which it is defined.
+;; 0x89's solution (for some reason, the float has some precision error, so I modified it.)
+(fn [n] #(int (Math/pow % n)))
+
 ;; Problem 122. Read a binary number
 ;; Convert a binary number, provided in the form of a string, to its numerical value.
 ;; adereth's solution
 #(Integer/parseInt % 2)
+
+;; Problem 118. Re-implement Map
+;; Map is one of the core elements of a functional programming language. Given a function f and an input sequence s, return a lazy
+;; sequence of (f x) for each element x in s.
+;; Special Restrictions: map, map-indexed, mapcat, for
+;; zawutuckatez's solution
+(fn [f l] (rest (reductions #(f %2) 0 l)))
+
+;; Problem 126. Through the Looking Class
+;; Enter a value which satisfies the following:
+;; (let [x __]
+;;   (and (= (class x) x) x))
+Class
+
+;; Problme 128. Recognize Playing Cards
+;; Write a function which converts (for example) the string "SJ" into a map of {:suit :spade, :rank 9}. A ten will always be
+;; represented with the single character "T", rather than the two characters "10".
+;; austintaylor's solution
+(fn [[s r]]
+    { :suit ({\D :diamond \H :heart \C :club \S :spade} s)
+         :rank (.indexOf (seq "23456789TJQKA") r)})
 
 ;; Problem 134. Infix Calculator
 ;; Your friend Joe is always whining about Lisps using the prefix notation for math. Show him how you could easily write a function
@@ -108,8 +185,19 @@ mapcat #(list % %)
 ;; awebb's solution
 iterate #(map +' `(0 ~@%) `(~@% 0))
 
+;; Problem 153. Pairwise Disjoint Sets
+;; Given a set of sets, create a function which returns true if no two of those sets have any elements in common and false otherwise.
+;; Some of the test cases are a bit tricky, so pay a little more attention to them.
+;; dacquiri's solution
+not-any? #(some #{'+ 0 [] :a} %)
+
 ;; Problem 157. Indexing Sequences
 ;; Transform a sequence into a sequence of pairs containing the original elements along with their index.
 ;; austintaylor's solution
 #(map list % (range))
+
+;; Problem 173. Intro to Destructuring 2
+;; Sequential destructuring allows you to bind symbols to parts of sequential things (vectors, lists, seqs, etc.): (let [bindings* ]
+;; exprs*) Complete the bindings so all let-parts evaluate to 3.
+x y
 

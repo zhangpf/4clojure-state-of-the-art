@@ -61,6 +61,10 @@ filter odd?
 ;; mllr's solution
 #(map last (partition-by str %))
 
+;; Problem 31. Pack a Sequence
+;; Write a function which packs consecutive duplicates into sub-lists.
+partition-by str
+
 ;; Problem 32. Duplicate a Sequence
 ;; Write a function which duplicates each element of a sequence.
 ;; austintaylor's solution
@@ -88,6 +92,16 @@ mapcat #(list % %)
 ;; etc.
 mapcat vector
 
+;; Problem 40. Interpose a Seq
+;; Write a function which separates the items of a sequence by an arbitrary value.
+;; Special Restrictions: interpose
+;; dacquiri's solution
+#(rest (for [i %2, x [% i]] x))
+
+;; Problem 41. Drop Every Nth Item
+;; Write a function which drops every Nth item from a sequence.
+#(flatten (partition-all (dec %2) %2 %1))
+
 ;; Problem 42. Factorial Fun
 ;; Write a function which calculates factorials.
 #(apply * (range % 1 -1))
@@ -106,6 +120,21 @@ mapcat vector
 ;; an item in the collection.
 6
 
+;; Problem 49. Split a sequence
+;; Write a function which will split a sequence into two parts.
+;; Special Restrictions: split-at
+;; thegeez's solution
+(juxt take drop)
+
+;; Problem 51. Advanced Destructuring
+;; Here is an example of some more sophisticated destructuring.
+;; (= [1 2 [3 4 5] [1 2 3 4 5]] (let [[a b & c :as d] __] [a b c d]))
+[1 2 3 4 5]
+
+;; Problem 52. Intro to Destructuring
+;; Let bindings and function parameter lists support destructuring.
+[c e]
+
 ;; Problem 61. Map Construction
 ;; Write a function which takes a vector of keys and a vector of values and constructs a map from them.
 ;; chouser's solution
@@ -117,10 +146,31 @@ mapcat vector
 ;; dacquiri's solution
 #(tree-seq % (juxt %) %2)
 
+;; Problem 66. Greatest Common Divisor
+;; Given two integers, write a function which returns the greatest common divisor.
+;; megaterik's solution
+#(if (= 0 %2) % (recur %2 (mod % %2)))
+
 ;; Problem 81. Set Intersection
 ;; Write a function which returns the intersection of two sets. The intersection is the sub-set of items that each set has in common.
 ;; aceeca1's solution
 (comp set filter)
+
+;; Problem 83. A Half-Truth
+;; Write a function which takes a variable number of booleans. Your function should return true if some of the parameters are true, but
+;; not all of the parameters are true. Otherwise your function should return false.
+;; awebb's solution
+not=
+
+;; Problem 88. Symmetric Difference
+;; Write a function which returns the symmetric difference of two sets. The symmetric difference is the set of items belonging to one
+;; but not both of the two sets.
+;; kohyama's solution
+#(set (concat (remove % %2) (remove %2 %)))
+
+;; Problem 90. Cartesian Product
+;; Write a function which calculates the Cartesian product of two sets.
+#(set (for [x %1 y %2] [x y]))
 
 ;; Problem 95. To Tree, or not to Tree
 ;; Write a predicate which checks whether or not a given sequence represents a binary tree. Each node in the tree must have a value, a
@@ -139,16 +189,16 @@ mapcat vector
 ;; baex's solution
 #(nth (iterate (fn [x] (map + `(0 ~@x) `(~@x 0))) [1]) (- % 1))
 
+;; Problem 99. Product Digits
+;; Write a function which multiplies two numbers and returns the result as a sequence of its digits.
+;; aimhere's solutiont 
+#(for [d (str (* % %2))] (- (int d) 48))
+
 ;; Problem 107. Simple closures
 ;; Given a positive integer n, return a function (f x) which computes xn. Observe that the effect of this is to preserve the value of n
 ;; for use outside the scope in which it is defined.
 ;; 0x89's solution (for some reason, the float has some precision error, so I modified it.)
 (fn [n] #(int (Math/pow % n)))
-
-;; Problem 122. Read a binary number
-;; Convert a binary number, provided in the form of a string, to its numerical value.
-;; adereth's solution
-#(Integer/parseInt % 2)
 
 ;; Problem 118. Re-implement Map
 ;; Map is one of the core elements of a functional programming language. Given a function f and an input sequence s, return a lazy
@@ -157,13 +207,25 @@ mapcat vector
 ;; zawutuckatez's solution
 (fn [f l] (rest (reductions #(f %2) 0 l)))
 
+;; Problem 120. Sum of square of digits
+;; Write a function which takes a collection of integers as an argument. Return the count of how many elements are smaller
+;; than the sum of their squared component digits. For example: 10 is larger than 1 squared plus 0 squared; whereas 15 is smaller than
+;; 1 squared plus 5 squared.
+;; cgrand's solution
+reduce #(if (< %2 (reduce + (map (zipmap "0123456789" (map * (range) (range))) (str %2)))) (inc %) %) 0
+
+;; Problem 122. Read a binary number
+;; Convert a binary number, provided in the form of a string, to its numerical value.
+;; adereth's solution
+#(Integer/parseInt % 2)
+
 ;; Problem 126. Through the Looking Class
 ;; Enter a value which satisfies the following:
 ;; (let [x __]
 ;;   (and (= (class x) x) x))
 Class
 
-;; Problme 128. Recognize Playing Cards
+;; Problem 128. Recognize Playing Cards
 ;; Write a function which converts (for example) the string "SJ" into a map of {:suit :spade, :rank 9}. A ten will always be
 ;; represented with the single character "T", rather than the two characters "10".
 ;; austintaylor's solution
@@ -171,13 +233,17 @@ Class
     { :suit ({\D :diamond \H :heart \C :club \S :spade} s)
          :rank (.indexOf (seq "23456789TJQKA") r)})
 
-;; Problem 134. Infix Calculator
+;; Problem 135. Infix Calculator
 ;; Your friend Joe is always whining about Lisps using the prefix notation for math. Show him how you could easily write a function
 ;; that does math using the infix notation. Is your favorite language that flexible, Joe? Write a function that accepts a variable
 ;; length mathematical expression consisting of numbers and the operations +, -, *, and /. Assume a simple calculator that does not do
 ;; precedence and instead just calculates left to right.
 ;; sheldon's solution
 (fn i ([r] r) ([l o r & m] (apply i (o l r) m)))
+
+;; Problem 143. dot product
+;; Create a function that computes the dot product of two sequences. You may assume that the vectors will have the same length. 
+#(apply + (map * % %2))
 
 ;; Problem 147. Pascal's Trapezoid
 ;; Write a function that, for any given input vector of numbers, returns an infinite lazy sequence of vectors, where each next one is
@@ -195,6 +261,16 @@ not-any? #(some #{'+ 0 [] :a} %)
 ;; Transform a sequence into a sequence of pairs containing the original elements along with their index.
 ;; austintaylor's solution
 #(map list % (range))
+
+;; Problem 166. Comparisons
+;; For any orderable data type it's possible to derive all of the basic comparison operations (<, ≤, =, ≠, ≥, and >) from a single
+;; operation (any operator but = or ≠ will work). Write a function that takes three arguments, a less than operator for the data and
+;; two items to compare. The function should return a keyword describing the relationship between the two items. The keywords for the
+;; relationship between x and y are as follows:
+;; x = y → :eq
+;; x > y → :gt
+;; x < y → :lt
+#(if (% %2 %3) :lt (if (% %3 %2) :gt :eq))
 
 ;; Problem 173. Intro to Destructuring 2
 ;; Sequential destructuring allows you to bind symbols to parts of sequential things (vectors, lists, seqs, etc.): (let [bindings* ]

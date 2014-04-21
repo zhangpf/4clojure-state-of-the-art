@@ -146,6 +146,14 @@ mapcat vector
 ;; dacquiri's solution
 #(tree-seq % (juxt %) %2)
 
+;; Problem 63. Group a Sequence
+;; Given a function f and a sequence s, write a function which returns a map. The keys should be the values of f applied to each item
+;; in s. The value at each key should be a vector of corresponding items in the order they appear in s.
+;; Special Restrictions: group-by
+;; bmaddy's solution
+#(apply merge-with into
+        (for [x %2] {(% x) [x]}))
+
 ;; Problem 66. Greatest Common Divisor
 ;; Given two integers, write a function which returns the greatest common divisor.
 ;; megaterik's solution
@@ -193,6 +201,11 @@ not=
 ;; Write a function which multiplies two numbers and returns the result as a sequence of its digits.
 ;; aimhere's solutiont 
 #(for [d (str (* % %2))] (- (int d) 48))
+
+;; Problem 100. Least Common Multiple
+;; Write a function which calculates the least common multiple. Your function should accept a variable number of positive integers or
+;; ratios. 
+(fn [& h] (reduce #(* % %2 (/ ((fn f [x y] (if (= x 0) y (f (mod y x) x))) % %2))) h))
 
 ;; Problem 107. Simple closures
 ;; Given a positive integer n, return a function (f x) which computes xn. Observe that the effect of this is to preserve the value of n
@@ -244,6 +257,15 @@ Class
 ;; Problem 143. dot product
 ;; Create a function that computes the dot product of two sequences. You may assume that the vectors will have the same length. 
 #(apply + (map * % %2))
+
+;; Problem 146. Trees into tables
+;; For this problem, your goal is to "flatten" a map of hashmaps. Each key in your output map should be the "path"1 that you would have
+;; to take in the original map to get to a value, so for example {1 {2 3}} should result in {[1 2] 3}. You only need to flatten one
+;; level of maps: if one of the values is a map, just leave it alone.
+;; 0x89's solution
+#(into 
+     {} (for [[k v] % [s t] v] [[k s] t])
+     )
 
 ;; Problem 147. Pascal's Trapezoid
 ;; Write a function that, for any given input vector of numbers, returns an infinite lazy sequence of vectors, where each next one is

@@ -16,6 +16,12 @@
 ;; order (this is why 'set' is used in the test cases).
 #(vals (group-by type %))
 
+;; Problem 54. Partition a Sequence
+;; Write a function which returns a sequence of lists of x items each. Lists of less than x items should not be returned.
+;; Special Restrictions: partition, partition-all
+(fn [x s]
+    (map #(take x (drop % s)) (range 0 (- (count s) x -1) x)))
+
 ;; Problem 55. Count Occurrences
 ;; Write a function which returns a map containing the number of occurences of each distinct item in a sequence.
 ;; Special Restrictions: frequencies
@@ -27,6 +33,13 @@ reduce #(assoc % %2 (+ 1 (% %2 0))) {}
 #(vec (java.util.LinkedHashSet. %))
 ;; alternative solution
 reduce #(if ((set %) %2) % (conj % %2)) []
+
+;; Problem 58. Function Composition
+;; Write a function which allows you to create function compositions. The parameter list should take a variable number of functions,
+;; and create a function applies them from right-to-left.
+;; Special Restrictions: comp
+(fn c [a f & g] (if g #(f (a (a c a g) %&)) f))
+apply
 
 ;; Problem 59. Juxtaposition
 ;; Take a set of functions and return a new function that takes a variable number of arguments and returns a sequence containing the
@@ -107,6 +120,24 @@ reduce (fn [y z] (into y (map #(conj % z) y))) #{#{}}
 ;; :keys-like-this until it's time to convert. Write a function which takes lower-case hyphen-separated strings and converts them to
 ;; camel-case strings.
 #(clojure.string/replace % #"-." (fn [[_ x]] (format "%S" x)))
+
+;; Problem 108. Lazy Searching
+;; Given any number of sequences, each sorted from smallest to largest, find the smallest single number which appears in all of the
+;; sequences. The sequences may be infinite, so be careful to search lazily.
+(fn [f & r]
+    (some (fn [e]
+            (if (every?
+                  (fn [c] (= e (some #(if (>= % e) %) c)))
+                  r)
+              e)
+            )
+          f))
+
+;; Problem 114. Global take-while
+;; Write a function which accepts an integer n, a predicate p, and a sequence. It should return a lazy sequence of items in the list up
+;; to, but not including, the nth item that satisfies the predicate.
+(fn [n p s] 
+    (take (.indexOf s (nth (filter p s) (- n 1))) s))
 
 ;; Problem 115. The Balance of N
 ;; A balanced number is one whose component digits have the same sum on the left and right halves of the number. Write a function which

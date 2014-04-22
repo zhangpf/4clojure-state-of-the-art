@@ -14,27 +14,24 @@
 ;; Write a function which takes a sequence consisting of items with different types and splits them up into a set of homogeneous
 ;; sub-sequences. The internal order of each sub-sequence should be maintained, but the sub-sequences themselves can be returned in any
 ;; order (this is why 'set' is used in the test cases).
-;; _pcl's solution
 #(vals (group-by type %))
 
 ;; Problem 55. Count Occurrences
 ;; Write a function which returns a map containing the number of occurences of each distinct item in a sequence.
 ;; Special Restrictions: frequencies
-;; jriddy's solution
 reduce #(assoc % %2 (+ 1 (% %2 0))) {}
 
 ;; Problem 56. Find Distinct Items
 ;; Write a function which removes the duplicates from a sequence. Order of the items must be maintained.
 ;; Special Restrictions: distinct
 #(vec (java.util.LinkedHashSet. %))
-;; baex's solution
+;; alternative solution
 reduce #(if ((set %) %2) % (conj % %2)) []
 
 ;; Problem 59. Juxtaposition
 ;; Take a set of functions and return a new function that takes a variable number of arguments and returns a sequence containing the
 ;; result of applying each function left-to-right to the argument list.
 ;; Special Restrictions: juxt
-;; sheldon's solution
 #(fn [& x] (for [y %&] (apply y x)))
 
 ;; Problem 65. Black Box Testing
@@ -57,7 +54,6 @@ reduce #(if ((set %) %2) % (conj % %2)) []
 ;; Problem 74. Filter Perfect Squares
 ;; Given a string of comma separated integers, write a function which returns a new comma separated string that only contains the
 ;; numbers which are perfect squares.
-;; awebb's solution
 (fn [s] 
   (clojure.string/join 
     "," 
@@ -81,7 +77,6 @@ reduce #(if ((set %) %2) % (conj % %2)) []
 ;; rearranged in a different order to form y. Your function should return a set of sets, where each sub-set is a group of words which
 ;; are anagrams of each other. Each sub-set should have at least two words. Words without any anagrams should not be included in the
 ;; result.
-;; pawellozinski's solution
 #(set (map set (filter next (vals (group-by set %)))))
 
 ;; Problem 80. Perfect Numbers
@@ -92,7 +87,6 @@ reduce #(if ((set %) %2) % (conj % %2)) []
 ;; Problem 85. Power Set
 ;; Write a function which generates the power set of a given set. The power set of a set x is the set of all subsets of x, including
 ;; the empty set and x itself.
-;; quant1's solution
 reduce (fn [y z] (into y (map #(conj % z) y))) #{#{}}
 
 ;; Problem 86. Happy numbers
@@ -100,21 +94,18 @@ reduce (fn [y z] (into y (map #(conj % z) y))) #{#{}}
 ;; squares to get a new number. Repeat with the new number and eventually, you might get to a number whose squared sum is 1. This is a
 ;; happy number. An unhappy number (or sad number) is one that loops endlessly. Write a function that determines if a number is happy
 ;; or not.
-;; sheldon's solution
 (fn [x] (= 1 (nth (iterate #(reduce (fn [y z] (+ y (let [t (- (int z) 48)] (* t t)))) 0 (str %)) x) 10)))
 
 ;; Problem 98. Equivalence Classes
 ;; A function f defined on a domain D induces an equivalence relation on D, as follows: a is equivalent to b with respect to f if and
 ;; only if (f a) is equal to (f b). Write a function with arguments f and D that computes the equivalence classes of D with respect to
 ;; f.
-;; _pcl's solution
 #(set (map set (vals (group-by % %2))))
 
 ;; Problem 102. intoCamelCase
 ;; When working with java, you often need to create an object with fieldsLikeThis, but you'd rather work with a hashmap that has
 ;; :keys-like-this until it's time to convert. Write a function which takes lower-case hyphen-separated strings and converts them to
 ;; camel-case strings.
-;; chouser's solution
 #(clojure.string/replace % #"-." (fn [[_ x]] (format "%S" x)))
 
 ;; Problem 115. The Balance of N
@@ -126,6 +117,5 @@ reduce (fn [y z] (into y (map #(conj % z) y))) #{#{}}
 ;; Write a function which returns a sequence of digits of a non-negative number (first argument) in numerical system with an arbitrary
 ;; base (second argument). Digits should be represented with their integer values, e.g. 15 would be [1 5] in base 10, [1 1 1 1] in base
 ;; 2 and [15] in base 16. 
-;; mehmet's solution
 (fn f [n b] (if (< n b) [n] (conj (f (quot n b) b)(mod n b) )))
 

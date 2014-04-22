@@ -130,7 +130,6 @@ apply +
 
 ;; Problem 156. Map Defaults
 ;; Write a function which takes a default value and a sequence of keys and constructs a map.
-;; awebb's solution
 #(zipmap %2 (repeat %))
 
 ;; Problem 161. Subset and Superset

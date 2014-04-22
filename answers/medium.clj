@@ -2,6 +2,10 @@
 ;; Pengfei Zhang
 ;; Medium level
 
+;; Problem 44. Rotate Sequence
+;; Write a function which can rotate a sequence in either direction.
+#(let [x (count %2)] (take x (drop (mod % x) (cycle %2))))
+
 ;; Problem 46. Flipping out
 ;; Write a higher-order function which flips the order of the arguments of an input function.
 #(fn [a b] (% b a))
@@ -25,6 +29,13 @@ reduce #(assoc % %2 (+ 1 (% %2 0))) {}
 #(vec (java.util.LinkedHashSet. %))
 ;; baex's solution
 reduce #(if ((set %) %2) % (conj % %2)) []
+
+;; Problem 59. Juxtaposition
+;; Take a set of functions and return a new function that takes a variable number of arguments and returns a sequence containing the
+;; result of applying each function left-to-right to the argument list.
+;; Special Restrictions: juxt
+;; sheldon's solution
+#(fn [& x] (for [y %&] (apply y x)))
 
 ;; Problem 65. Black Box Testing
 ;; Write a function which takes a collection and returns one of :map, :set, :list, or :vector - describing the type of collection it
@@ -59,6 +70,12 @@ reduce #(if ((set %) %2) % (conj % %2)) []
     ) 
   )
 
+;; Problem 75. Euler's Totient Function
+;; Two numbers are coprime if their greatest common divisor equals 1. Euler's totient function f(x) is defined as the number of
+;; positive integers less than x which are coprime to x. The special case f(1) equals 1. Write a function which calculates Euler's
+;; totient function.
+(fn [z] (count (filter #(= 1 ((fn f [x y] (if (= 0 x) y (f (mod y x) x))) % z)) (range z 0 -1))))
+
 ;; Problem 77. Anagram Finder
 ;; Write a function which finds all the anagrams in a vector of words. A word x is an anagram of word y if all the letters in x can be
 ;; rearranged in a different order to form y. Your function should return a set of sets, where each sub-set is a group of words which
@@ -72,12 +89,38 @@ reduce #(if ((set %) %2) % (conj % %2)) []
 ;; which returns true for perfect numbers and false otherwise.
 (fn [x] (= x (apply + (filter #(= 0 (rem x %)) (range 1 x)))))
 
+;; Problem 85. Power Set
+;; Write a function which generates the power set of a given set. The power set of a set x is the set of all subsets of x, including
+;; the empty set and x itself.
+;; quant1's solution
+reduce (fn [y z] (into y (map #(conj % z) y))) #{#{}}
+
+;; Problem 86. Happy numbers
+;; Happy numbers are positive integers that follow a particular formula: take each individual digit, square it, and then sum the
+;; squares to get a new number. Repeat with the new number and eventually, you might get to a number whose squared sum is 1. This is a
+;; happy number. An unhappy number (or sad number) is one that loops endlessly. Write a function that determines if a number is happy
+;; or not.
+;; sheldon's solution
+(fn [x] (= 1 (nth (iterate #(reduce (fn [y z] (+ y (let [t (- (int z) 48)] (* t t)))) 0 (str %)) x) 10)))
+
+;; Problem 98. Equivalence Classes
+;; A function f defined on a domain D induces an equivalence relation on D, as follows: a is equivalent to b with respect to f if and
+;; only if (f a) is equal to (f b). Write a function with arguments f and D that computes the equivalence classes of D with respect to
+;; f.
+;; _pcl's solution
+#(set (map set (vals (group-by % %2))))
+
 ;; Problem 102. intoCamelCase
 ;; When working with java, you often need to create an object with fieldsLikeThis, but you'd rather work with a hashmap that has
 ;; :keys-like-this until it's time to convert. Write a function which takes lower-case hyphen-separated strings and converts them to
 ;; camel-case strings.
 ;; chouser's solution
 #(clojure.string/replace % #"-." (fn [[_ x]] (format "%S" x)))
+
+;; Problem 115. The Balance of N
+;; A balanced number is one whose component digits have the same sum on the left and right halves of the number. Write a function which
+;; accepts an integer n, and returns true iff n is balanced.
+#(let [y (map int (str %)) z (/ (count y) 2)] (= (apply + (drop z y)) (apply + (drop-last z y))))
 
 ;; Problem 137. Digits and bases
 ;; Write a function which returns a sequence of digits of a non-negative number (first argument) in numerical system with an arbitrary

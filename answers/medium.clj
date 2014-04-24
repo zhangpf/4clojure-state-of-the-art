@@ -206,3 +206,7 @@ reduce (fn [y z] (into y (map #(conj % z) y))) #{#{}}
 ;; Note: Some test cases have a very large n, so the most obvious solution will exceed the time limit.
 #(- (+ (% %2 %3) (% %2 %4)) (% %2 (* %3 %4)))
 #(* %2 1/2 (quot (- % 1) %2) (+ (quot (- % 1) %2) 1))
+
+;; Problem 158. Decurry
+;; Write a function that accepts a curried function of unknown arity n. Return an equivalent function of n arguments. 
+(fn [x] #(reduce (fn [u v] (u v)) x %&))

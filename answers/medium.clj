@@ -2,6 +2,10 @@
 ;; Pengfei Zhang
 ;; Medium level
 
+;; Problem 43. Reverse Interleave
+;; Write a function which reverses the interleave process into x number of subsequences.
+#(apply map list (partition %2 %))
+
 ;; Problem 44. Rotate Sequence
 ;; Write a function which can rotate a sequence in either direction.
 #(let [x (count %2)] (take x (drop (mod % x) (cycle %2))))
@@ -79,6 +83,13 @@ apply
     ) 
   )
 
+;; Problem 76. Intro to Trampoline
+;; The trampoline function takes a function f and a variable number of parameters. Trampoline calls f with any parameters that were
+;; supplied. If f returns a function, trampoline calls that function with no arguments. This is repeated, until the return value is not
+;; a function, and then trampoline returns that non-function value. This is useful for implementing mutually recursive algorithms in a
+;; way that won't consume the stack.
+[1 3 5 7 9 11]
+
 ;; Problem 75. Euler's Totient Function
 ;; Two numbers are coprime if their greatest common divisor equals 1. Euler's totient function f(x) is defined as the number of
 ;; positive integers less than x which are coprime to x. The special case f(1) equals 1. Write a function which calculates Euler's
@@ -91,6 +102,11 @@ apply
 ;; are anagrams of each other. Each sub-set should have at least two words. Words without any anagrams should not be included in the
 ;; result.
 #(set (map set (filter next (vals (group-by set %)))))
+
+;; Problem 78. Reimplement Trampoline
+;; Reimplement the function described in "Intro to Trampoline".
+;; Special Restrictions: trampoline
+#(if (fn? %) (recur (apply % %&) ()) %)
 
 ;; Problem 80. Perfect Numbers
 ;; A number is "perfect" if the sum of its divisors equal the number itself. 6 is a perfect number because 1+2+3=6. Write a function
@@ -121,6 +137,14 @@ reduce (fn [y z] (into y (map #(conj % z) y))) #{#{}}
 ;; camel-case strings.
 #(clojure.string/replace % #"-." (fn [[_ x]] (format "%S" x)))
 
+;; Problem 103. Generating k-combinations
+;; Given a sequence S consisting of n elements generate all k-combinations of S, i. e. generate all possible sets consisting of k
+;; distinct elements taken from S. The number of k-combinations for a sequence is equal to the binomial coefficient.
+(fn [n s] 
+    (set (nth (iterate #(for [y % x y] 
+                          (disj y x)) [s]) 
+              (Math/abs (- (count s) n)))))
+
 ;; Problem 108. Lazy Searching
 ;; Given any number of sequences, each sorted from smallest to largest, find the smallest single number which appears in all of the
 ;; sequences. The sequences may be infinite, so be careful to search lazily.
@@ -144,9 +168,41 @@ reduce (fn [y z] (into y (map #(conj % z) y))) #{#{}}
 ;; accepts an integer n, and returns true iff n is balanced.
 #(let [y (map int (str %)) z (/ (count y) 2)] (= (apply + (drop z y)) (apply + (drop-last z y))))
 
+;; Problem 116. Prime Sandwich
+;; A balanced prime is a prime number which is also the mean of the primes directly before and after it in the sequence of ;; valid primes. Create a function which takes an integer n, and returns true iff it is a balanced prime.
+(fn [x] (letfn [(c [y] (reduce #(and % %2) (< 1 y) (map #(not= 0 (mod y %)) (range 2 y))))]
+          (and (c x) 
+               (loop [u (- x 1) v (+ 1 x)]
+                 (if (and (c u) (c v))
+                   true
+                   (if (c v)
+                     (c u)
+                     (recur (dec u) (inc v))
+                     )
+                   )
+                 )
+               )
+          )
+  )
+  
+;; Problem 132. Insert between two items
+;; Write a function that takes a two-argument predicate, a value, and a collection; and returns a new collection where the value is inserted between every two items that satisfy the predicate.
+#(apply concat
+        (take 1 %3)
+        (for [[a b] (partition 2 1 %3)]
+          (if (% a b)
+            [%2 b]
+            [b])))
+
 ;; Problem 137. Digits and bases
 ;; Write a function which returns a sequence of digits of a non-negative number (first argument) in numerical system with an arbitrary
 ;; base (second argument). Digits should be represented with their integer values, e.g. 15 would be [1 5] in base 10, [1 1 1 1] in base
 ;; 2 and [15] in base 16. 
 (fn f [n b] (if (< n b) [n] (conj (f (quot n b) b)(mod n b) )))
 
+;; Problem 148. The Big Divide
+;; Write a function which calculates the sum of all natural numbers under n (first argument) which are evenly divisible by at least one
+;; of a and b (second and third argument). Numbers a and b are guaranteed to be coprimes.
+;; Note: Some test cases have a very large n, so the most obvious solution will exceed the time limit.
+#(- (+ (% %2 %3) (% %2 %4)) (% %2 (* %3 %4)))
+#(* %2 1/2 (quot (- % 1) %2) (+ (quot (- % 1) %2) 1))

@@ -51,6 +51,11 @@ apply
 ;; Special Restrictions: juxt
 #(fn [& x] (for [y %&] (apply y x)))
 
+;; Problem 60. Sequence Reductions
+;; Write a function which behaves like reduce, but returns each intermediate value of the reduction. Your function must accept either
+;; two or three arguments, and the return sequence must be lazy.
+apply (fn [f i & s] ((fn g [] (lazy-cat [i] (map f (g) s)))))
+
 ;; Problem 65. Black Box Testing
 ;; Write a function which takes a collection and returns one of :map, :set, :list, or :vector - describing the type of collection it
 ;; was given.
@@ -62,6 +67,16 @@ apply
 ;; Write a function which returns the first x number of prime numbers. 
 #(take %2 (remove (set (for [i % j (range (+ i i) 999 i)] j)) %))
 (range 2 999)
+
+;; Problem 69. Merge with a Function
+;; Write a function which takes a function f and a variable number of maps. Your function should return a map that consists of the rest
+;; of the maps conj-ed onto the first. If a key occurs in more than one map, the mapping(s) from the latter (left-to-right) should be
+;; combined with the mapping in the result by calling (f val-in-result val-in-latter)
+(fn [f & m]
+  (reduce
+    #(into % (for [[k v] %2] [k (if-let [w (% k)] (f w v) v)]))
+    m
+    ))
 
 ;; Problem 70. Word Sorting
 ;; Write a function that splits a sentence up into a sorted list of words. Capitalization should not affect sort order and punctuation

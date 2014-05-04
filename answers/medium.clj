@@ -160,6 +160,24 @@ reduce (fn [y z] (into y (map #(conj % z) y))) #{#{}}
                           (disj y x)) [s]) 
               (Math/abs (- (count s) n)))))
 
+;; Problem 104. Write Roman Numerals
+;; This is the inverse of Problem 92, but much easier. Given an integer smaller than 4000, return the corresponding roman numeral in
+;; uppercase, adhering to the subtractive principle.
+#(clojure.pprint/cl-format nil "~@R" %)
+
+;; Problem 105. Identify keys and values
+;; Given an input sequence of keywords and numbers, create a map such that each key in the map is a keyword, and the value is a
+;; sequence of all the numbers (if any) between it and the next keyword in the sequence.
+(fn f [[h & t]]
+  (into {}
+        (if h
+          (let [[y z] (split-with number? t)]
+            (cons [h y] (f z))
+            )
+          )
+        )
+  )
+
 ;; Problem 108. Lazy Searching
 ;; Given any number of sequences, each sorted from smallest to largest, find the smallest single number which appears in all of the
 ;; sequences. The sequences may be infinite, so be careful to search lazily.
@@ -171,6 +189,15 @@ reduce (fn [y z] (into y (map #(conj % z) y))) #{#{}}
               e)
             )
           f))
+
+;; Problem 110. Sequence of pronunciations
+;; Write a function that returns a lazy sequence of "pronunciations" of a sequence of numbers. A pronunciation of each element in the
+;; sequence consists of the number of repeating identical numbers and the number itself. For example, [1 1] is pronounced as [2 1]
+;; ("two ones"), which in turn is pronounced as [1 2 1 1] ("one two, one one").
+;;
+;; Your function should accept an initial sequence of numbers, and return an infinite lazy sequence of pronunciations, each element
+;; being a pronunciation of the previous element.
+(comp next iterate) #(mapcat (juxt count first) (partition-by + %))
 
 ;; Problem 114. Global take-while
 ;; Write a function which accepts an integer n, a predicate p, and a sequence. It should return a lazy sequence of items in the list up
@@ -199,6 +226,21 @@ reduce (fn [y z] (into y (map #(conj % z) y))) #{#{}}
                )
           )
   )
+
+;; Problem 121. Universal Computation Engine
+;; Given a mathematical formula in prefix notation, return a function that calculates the value of the formula. The formula can contain
+;; nested calculations using the four basic mathematical operators, numeric constants, and symbols representing variables. The returned
+;; function has to accept a single parameter containing the map of variable names to their values. 
+(fn s [[o & p]]
+  (fn [m]
+    (apply ({'+ + '/ / '- - '* *} o)
+           (map #(if (seq? %) 
+                   ((s %) m)
+                   (get m % %)) 
+                p)
+           )
+    )
+  )
   
 ;; Problem 132. Insert between two items
 ;; Write a function that takes a two-argument predicate, a value, and a collection; and returns a new collection where the value is inserted between every two items that satisfy the predicate.
@@ -215,6 +257,11 @@ reduce (fn [y z] (into y (map #(conj % z) y))) #{#{}}
 ;; 2 and [15] in base 16. 
 (fn f [n b] (if (< n b) [n] (conj (f (quot n b) b)(mod n b) )))
 
+;; Problem 144. Oscilrate
+;; Write an oscillating iterate: a function that takes an initial value and a variable number of functions. It should return a lazy
+;; sequence of the functions applied to the value in order, restarting from the first function after it hits the end.
+(fn [x & s] (reductions #(%2 %) x (cycle s)))
+
 ;; Problem 148. The Big Divide
 ;; Write a function which calculates the sum of all natural numbers under n (first argument) which are evenly divisible by at least one
 ;; of a and b (second and third argument). Numbers a and b are guaranteed to be coprimes.
@@ -225,3 +272,9 @@ reduce (fn [y z] (into y (map #(conj % z) y))) #{#{}}
 ;; Problem 158. Decurry
 ;; Write a function that accepts a curried function of unknown arity n. Return an equivalent function of n arguments. 
 (fn [x] #(reduce (fn [u v] (u v)) x %&))
+
+;; Problem 171. Intervals
+;; Write a function that takes a sequence of integers and returns a sequence of "intervals". Each interval is a a vector of two
+;; integers, start and end, such that all integers between start and end (inclusive) are contained in the input sequence.
+#(map vector (% %2 inc) (% %2 dec))
+#(remove (set (map %2 %)) (set (sort %)))

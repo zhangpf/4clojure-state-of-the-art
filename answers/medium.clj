@@ -278,3 +278,16 @@ reduce (fn [y z] (into y (map #(conj % z) y))) #{#{}}
 ;; integers, start and end, such that all integers between start and end (inclusive) are contained in the input sequence.
 #(map vector (% %2 inc) (% %2 dec))
 #(remove (set (map %2 %)) (set (sort %)))
+
+;; Problem 177. Balancing Brackets
+;; When parsing a snippet of code it's often a good idea to do a sanity check to see if all the brackets match up. Write a function
+;; that takes in a string and returns truthy if all square [ ] round ( ) and curly { } brackets are properly paired and legally nested,
+;; or returns falsey otherwise.
+#(empty?
+   (reduce (fn [[s & t :as u] x]
+             (cond
+               (= x ({\{ \} \( \) \[ \]} s)) t
+               ((set "{}()[]") x) (cons x u)
+               1 u)) () %)
+   )
+
